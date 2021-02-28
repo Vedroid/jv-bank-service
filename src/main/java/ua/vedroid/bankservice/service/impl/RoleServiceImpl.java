@@ -3,6 +3,7 @@ package ua.vedroid.bankservice.service.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.vedroid.bankservice.entity.Role;
+import ua.vedroid.bankservice.exception.NoEntityException;
 import ua.vedroid.bankservice.repository.RoleRepository;
 import ua.vedroid.bankservice.service.RoleService;
 
@@ -18,6 +19,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getByName(String name) {
-        return roleRepository.getByRoleName(Role.RoleName.valueOf(name)).get();
+        return roleRepository.getByRoleName(Role.RoleName.valueOf(name)).orElseThrow(() ->
+                new NoEntityException("Role not found by name: " + name));
     }
 }
