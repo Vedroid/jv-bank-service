@@ -30,11 +30,13 @@ public class TransactionServiceImpl implements TransactionService {
         BigDecimal amount = dto.getAmount();
         BigDecimal fromAccountBalance = fromAccount.getBalance();
         BigDecimal currentAmount = fromAccountBalance.subtract(amount);
-        if (currentAmount.compareTo(BigDecimal.valueOf(0)) < 0) {
+        if (currentAmount.compareTo(BigDecimal.ZERO) < 0) {
             throw new InsufficientFundsException("Insufficient funds on account " + fromAccount);
         }
         fromAccount.setBalance(currentAmount);
         toAccount.setBalance(toAccount.getBalance().add(amount));
+        accountService.save(fromAccount);
+        accountService.save(toAccount);
         LocalDateTime now = LocalDateTime.now();
         Transaction outcomingTransaction = Transaction.builder()
                 .fromAccount(fromAccount)
@@ -57,7 +59,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public List<Transaction> getHistory(String accountNumber, int page, int limit) {
         PageRequest pageRequest = PageRequest
-                .of(page - 1, limit, Sort.by("date").descending().and(Sort.by("id")));
+                .of(page, limit, Sort.by("date").descending().and(Sort.by("id")));
         return transactionRepository.findAllByAccountNumber(accountNumber, pageRequest);
     }
 }

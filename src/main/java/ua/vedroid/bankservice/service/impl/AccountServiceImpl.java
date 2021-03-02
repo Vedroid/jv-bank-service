@@ -3,7 +3,6 @@ package ua.vedroid.bankservice.service.impl;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ua.vedroid.bankservice.entity.Account;
 import ua.vedroid.bankservice.exception.NoEntityException;
 import ua.vedroid.bankservice.repository.AccountRepository;
@@ -15,7 +14,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
 
     @Override
-    public Account create(Account account) {
+    public Account save(Account account) {
         return accountRepository.save(account);
     }
 
@@ -28,11 +27,5 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<Account> getAllByUserPhoneNumber(String phoneNumber) {
         return accountRepository.findAllByUserPhoneNumber(phoneNumber);
-    }
-
-    @Override
-    @Transactional
-    public void blockByAccountNumber(String accountNumber) {
-        accountRepository.blockByAccountNumber(accountNumber);
     }
 }
