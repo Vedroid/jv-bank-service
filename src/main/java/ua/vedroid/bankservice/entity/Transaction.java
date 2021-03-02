@@ -34,7 +34,7 @@ public class Transaction {
     @Column(nullable = false)
     private LocalDateTime date;
     @Column(nullable = false)
-    private Double amount;
+    private BigDecimal amount;
     @Column(nullable = false)
     private TransactionType type;
 

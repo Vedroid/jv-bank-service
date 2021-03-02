@@ -1,5 +1,6 @@
 package ua.vedroid.bankservice.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -26,14 +27,14 @@ public class TransactionServiceImpl implements TransactionService {
     public void transfer(TransactionDto dto) {
         Account fromAccount = accountService.findByAccountNumber(dto.getFromAccount());
         Account toAccount = accountService.findByAccountNumber(dto.getToAccount());
-        double amount = dto.getAmount();
-        Double fromAccountBalance = fromAccount.getBalance();
-        double currentAmount = fromAccountBalance - amount;
-        if (currentAmount < 0.0) {
+        BigDecimal amount = dto.getAmount();
+        BigDecimal fromAccountBalance = fromAccount.getBalance();
+        BigDecimal currentAmount = fromAccountBalance.subtract(amount);
+        if (currentAmount.compareTo(BigDecimal.valueOf(0)) < 0) {
             throw new InsufficientFundsException("Insufficient funds on account " + fromAccount);
         }
         fromAccount.setBalance(currentAmount);
-        toAccount.setBalance(toAccount.getBalance() + amount);
+        toAccount.setBalance(toAccount.getBalance().add(amount));
         LocalDateTime now = LocalDateTime.now();
         Transaction outcomingTransaction = Transaction.builder()
                 .fromAccount(fromAccount)

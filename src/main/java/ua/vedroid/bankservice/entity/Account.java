@@ -25,7 +25,7 @@ public class Account {
     @Column(nullable = false)
     private Currency currency;
     @Column(nullable = false)
-    private Double balance;
+    private BigDecimal balance;
     @Column(name = "is_active")
     private boolean isActive;
     @ManyToOne
