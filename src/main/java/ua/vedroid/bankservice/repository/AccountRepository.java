@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 import ua.vedroid.bankservice.entity.Account;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
@@ -16,7 +15,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByAccountNumber(String accountNumber);
 
     @Modifying
-    @Transactional
     @Query("UPDATE Account SET isActive = false WHERE accountNumber = ?1")
     void blockByAccountNumber(String accountNumber);
 }
