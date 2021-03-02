@@ -18,7 +18,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Enumerated(EnumType.STRING)
-    @Column(name = "role_name", unique = true)
+    @Column(name = "role_name", unique = true, nullable = false)
     private RoleName roleName;
 
     public enum RoleName {

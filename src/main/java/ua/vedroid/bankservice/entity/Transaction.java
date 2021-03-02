@@ -1,6 +1,8 @@
 package ua.vedroid.bankservice.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,13 +26,16 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "account_from")
+    @JoinColumn(name = "account_from", nullable = false)
     private Account fromAccount;
     @ManyToOne
-    @JoinColumn(name = "account_to")
+    @JoinColumn(name = "account_to", nullable = false)
     private Account toAccount;
+    @Column(nullable = false)
     private LocalDateTime date;
+    @Column(nullable = false)
     private Double amount;
+    @Column(nullable = false)
     private TransactionType type;
 
     public enum TransactionType {
