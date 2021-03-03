@@ -1,6 +1,7 @@
 package ua.vedroid.bankservice.service.impl;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -15,14 +16,14 @@ import ua.vedroid.bankservice.exception.InsufficientFundsException;
 import ua.vedroid.bankservice.repository.TransactionRepository;
 import ua.vedroid.bankservice.service.AccountService;
 import ua.vedroid.bankservice.service.TransactionService;
-import ua.vedroid.bankservice.util.CurrencyConverter;
+import ua.vedroid.bankservice.util.ExchangeRateRequester;
 
 @Service
 @AllArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountService accountService;
-    private final CurrencyConverter converter;
+    private final ExchangeRateRequester rateRequester;
 
     @Override
     @Transactional
@@ -35,8 +36,9 @@ public class TransactionServiceImpl implements TransactionService {
         if (currentAmount.compareTo(BigDecimal.ZERO) < 0) {
             throw new InsufficientFundsException("Insufficient funds on account " + fromAccount);
         }
-        BigDecimal convertedAmount = converter
-                .convert(fromAccount.getCurrency(), toAccount.getCurrency(), amount);
+        double rate = rateRequester.getRate(fromAccount.getCurrency(),
+                toAccount.getCurrency(), LocalDate.now());
+        BigDecimal convertedAmount = amount.multiply(BigDecimal.valueOf(rate));
         fromAccount.setBalance(currentAmount);
         toAccount.setBalance(toAccount.getBalance().add(convertedAmount));
         accountService.save(fromAccount);
