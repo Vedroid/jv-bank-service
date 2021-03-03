@@ -15,12 +15,14 @@ import ua.vedroid.bankservice.exception.InsufficientFundsException;
 import ua.vedroid.bankservice.repository.TransactionRepository;
 import ua.vedroid.bankservice.service.AccountService;
 import ua.vedroid.bankservice.service.TransactionService;
+import ua.vedroid.bankservice.util.CurrencyConverter;
 
 @Service
 @AllArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountService accountService;
+    private final CurrencyConverter converter;
 
     @Override
     @Transactional
@@ -33,8 +35,10 @@ public class TransactionServiceImpl implements TransactionService {
         if (currentAmount.compareTo(BigDecimal.ZERO) < 0) {
             throw new InsufficientFundsException("Insufficient funds on account " + fromAccount);
         }
+        BigDecimal convertedAmount = converter
+                .convert(fromAccount.getCurrency(), toAccount.getCurrency(), amount);
         fromAccount.setBalance(currentAmount);
-        toAccount.setBalance(toAccount.getBalance().add(amount));
+        toAccount.setBalance(toAccount.getBalance().add(convertedAmount));
         accountService.save(fromAccount);
         accountService.save(toAccount);
         LocalDateTime now = LocalDateTime.now();
@@ -48,7 +52,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction incomingTransaction = Transaction.builder()
                 .fromAccount(fromAccount)
                 .toAccount(toAccount)
-                .amount(amount)
+                .amount(convertedAmount)
                 .date(now)
                 .type(Transaction.TransactionType.INCOMING)
                 .build();
