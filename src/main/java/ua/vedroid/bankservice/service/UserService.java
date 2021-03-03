@@ -11,5 +11,5 @@ public interface UserService {
 
     User findByPhoneNumber(String phoneNumber);
 
-    void remove(Long id);
+    void delete(Long id);
 }
