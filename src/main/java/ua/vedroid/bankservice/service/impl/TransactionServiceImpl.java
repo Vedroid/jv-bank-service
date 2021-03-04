@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.vedroid.bankservice.entity.Account;
 import ua.vedroid.bankservice.entity.Transaction;
-import ua.vedroid.bankservice.entity.dto.TransactionDto;
+import ua.vedroid.bankservice.entity.dto.TransactionRequestDto;
 import ua.vedroid.bankservice.exception.InsufficientFundsException;
 import ua.vedroid.bankservice.repository.TransactionRepository;
 import ua.vedroid.bankservice.service.AccountService;
@@ -27,7 +27,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public void transfer(TransactionDto dto) {
+    public void transfer(TransactionRequestDto dto) {
         Account fromAccount = accountService.findByAccountNumber(dto.getFromAccount());
         Account toAccount = accountService.findByAccountNumber(dto.getToAccount());
         BigDecimal amount = dto.getAmount();

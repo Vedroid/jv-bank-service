@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import lombok.Data;
 
 @Data
-public class TransactionDto {
+public class TransactionRequestDto {
     private String fromAccount;
     private String toAccount;
     private BigDecimal amount;
